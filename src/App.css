@@ -46,7 +46,12 @@ legend {
 }
 .main-container {
   margin-top: 50px;
+  margin-bottom: 50px;
   min-height: 80%;
+  -moz-box-shadow: 0 0 10px 10px #ccc;
+  -webkit-box-shadow: 0 0 10px 10px #ccc;
+  box-shadow: 0 0 10px 10px #ccc;
+  padding: 20px;
 }
 .main-container .page-name {
   border-radius: 5px;

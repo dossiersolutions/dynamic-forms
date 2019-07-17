@@ -88,12 +88,12 @@ class Main extends Component {
               <h2>{pageName}</h2>
             </nav>
             <div className="main-content">{mainPart}</div>
+            <PopupWindow
+                showPopup={this.props.showPopup}
+                title={this.props.popupWindowTitle}
+                content={this.props.popupWindowContent}
+            />
           </div>
-          <PopupWindow
-              showPopup={this.props.showPopup}
-              title={this.props.popupWindowTitle}
-              content={this.props.popupWindowContent}
-          />
         </React.Fragment>;
   };
 }
