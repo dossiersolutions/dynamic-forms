@@ -1,28 +1,189 @@
-.App {
-  text-align: center;
+html,
+body {
+  min-height: 100%;
 }
-
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-  pointer-events: none;
+label {
+  width: 20%;
 }
-
-.App-header {
+legend {
+  width: inherit;
+  padding: 0 20px;
+  font-weight: bold;
+}
+.form-control {
+  display: inline-block;
+  width: 70%;
+}
+.control-label {
+  vertical-align: top;
+}
+.form-group.required .control-label:after {
+  content:" *";
+  color:red;
+}
+#root,
+.app {
+  min-height: 100%;
+}
+.app-header,
+.app-header a{
   background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
   color: white;
 }
-
-.App-link {
-  color: #61dafb;
+.app-header a:hover {
+  text-decoration: none;
 }
-
+.app-header .app-logo {
+  animation: App-logo-spin infinite 20s linear;
+  pointer-events: none;
+  height: 40px;
+  vertical-align: middle;
+}
+.app-header .app-name {
+  font-weight: bold;
+}
+.main-container {
+  margin-top: 50px;
+  min-height: 80%;
+}
+.main-container .page-name {
+  border-radius: 5px;
+}
+.main-container .control-buttons {
+  position: relative;
+  height: 100%;
+}
+.main-container .control-buttons button {
+  margin: 30px 0;
+}
+.main-container .form-list .action-col .action-button {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 5px;
+  width: 30px;
+  height: 30px;
+  background: none;
+  border: 0;
+  color: #ffffff;
+}
+.main-container .form-list .action-col .action-button .table-icon {
+  width: 20px;
+  height: 20px;
+}
+.main-container .form-list .action-col .action-button .table-icon.table-icon-red {
+  color: red;
+}
+.main-container .content-wrapper.content-wrapper-dynamic-form .dynamic-form-wrapper {
+  padding: 20px;
+  border: 1px solid;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  background: rgba(0, 0, 0, 0.05);
+}
+.main-container .content-wrapper.content-wrapper-dynamic-form .dynamic-form-wrapper fieldset.form-group {
+  border: 1px solid #ced4da;
+  border-radius: .25rem;
+  transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+  padding: 10px 10px 10px 20px;
+}
+.main-container .content-wrapper .inline-action-button-wrapper {
+  display: inline-block;
+  margin-left: 15px;
+  vertical-align: top;
+}
+.main-container .content-wrapper .inline-action-button-wrapper,
+.main-container .content-wrapper .inline-action-button-wrapper .inline-action-button {
+  display: inline-block;
+  margin-right: 5px;
+  width: 20px;
+  height: 20px;
+  background: none;
+  border: 0;
+}
+.main-container .content-wrapper .inline-action-button-wrapper .inline-action-button .action-icon {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+}
+.main-container .content-wrapper .inline-action-button-wrapper .inline-action-button .action-icon {
+  display: block;
+}
+.main-container .content-wrapper .inline-action-button-wrapper .inline-action-button .action-icon.icon-red {
+  color: red;
+}
+.popup-window.react-confirm-alert-wrapper .react-confirm-alert {
+  box-shadow: 0 20px 75px rgba(0, 0, 0, 0.13);
+}
+.popup-window.react-confirm-alert-wrapper .react-confirm-alert .react-confirm-alert-header {
+  background: #fff;
+  border-radius: 10px 10px 0 0;
+  color: #666;
+  padding: 10px 20px;
+  position: relative;
+  border-bottom: 1px solid #ced4da;
+}
+.popup-window.react-confirm-alert-wrapper .react-confirm-alert .react-confirm-alert-body {
+  box-shadow: none;
+}
+.popup-window.react-confirm-alert-wrapper .react-confirm-alert .react-confirm-alert-header .react-confirm-alert-header-title {
+  font-weight: bold;
+  font-size: 20px;
+}
+.popup-window.react-confirm-alert-wrapper .react-confirm-alert .react-confirm-alert-header .react-confirm-alert-header-buttons {
+  position: absolute;
+  right: 11px;
+  top: 11px;
+  width: 20px;
+  height: 20px;
+}
+.popup-window.react-confirm-alert-wrapper .react-confirm-alert .react-confirm-alert-header .react-confirm-alert-header-buttons .inline-action-button {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background: none;
+  border: 0;
+  padding: 0;
+}
+.popup-window.react-confirm-alert-wrapper .react-confirm-alert .react-confirm-alert-header .react-confirm-alert-header-buttons .inline-action-button .action-icon {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+}
+.popup-window.react-confirm-alert-wrapper .react-confirm-alert .react-confirm-alert-header .react-confirm-alert-header-buttons .inline-action-button .action-icon.icon-red {
+  color: red;
+}
+.popup-window.react-confirm-alert-wrapper .react-confirm-alert .react-confirm-alert-body {
+  border-radius: 0 0 10px 10px;
+  padding: 15px;
+}
+.popup-window label {
+  width: 100%;
+  display: block;
+}
+.popup-window .form-control {
+  display: block;
+  width: 100%;
+}
+.react-confirm-alert .react-confirm-alert-body .react-confirm-alert-button-group button:first-child {
+  background: red;
+  color: white;
+}
+.react-confirm-alert .react-confirm-alert-body .react-confirm-alert-button-group button:last-child {
+  color: #fff;
+  background-color: #218838;
+  border-color: #1e7e34;
+}
+.app-footer {
+  padding: 10px;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+}
+.app-footer img {
+  height: 30px;
+}
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
