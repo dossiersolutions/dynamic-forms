@@ -19,7 +19,9 @@ const DELETE_FORM_FIELDSET_ACTION = 'DELETE_FORM_FIELDSET_ACTION';
 const EDIT_FORM_FIELDSET_ACTION = 'EDIT_FORM_FIELDSET_ACTION';
 
 const DELETE_FORM_FIELD_ACTION = 'DELETE_FORM_FIELD_ACTION';
+const ADD_FORM_FIELD_ACTION = 'ADD_FORM_FIELD_ACTION';
 const EDIT_FORM_FIELD_ACTION = 'EDIT_FORM_FIELD_ACTION';
+const CLEAR_FIELD_CONFIG_MATRIX_ACTION = 'CLEAR_FIELD_CONFIG_MATRIX_ACTION';
 
 export const actions = {
   backToListPage() {
@@ -106,7 +108,7 @@ export const actions = {
       fieldIndex
     }
   },
-  editFieldAction({ formConfigIndex, fieldSetIndex, fieldIndex, fieldName, fieldValue }) {
+  editFieldAction(formConfigIndex, fieldSetIndex, fieldIndex, fieldName, fieldValue) {
     return {
       type: EDIT_FORM_FIELD_ACTION,
       formConfigIndex,
@@ -114,6 +116,18 @@ export const actions = {
       fieldIndex,
       fieldName,
       fieldValue
+    }
+  },
+  addFieldAction(formConfigIndex, fieldSetIndex) {
+    return {
+      type: ADD_FORM_FIELD_ACTION,
+      formConfigIndex,
+      fieldSetIndex
+    }
+  },
+  clearFieldConfigMatrixAction() {
+    return {
+      type: CLEAR_FIELD_CONFIG_MATRIX_ACTION,
     }
   }
 };
@@ -286,6 +300,65 @@ export function reducer(state = initialState, action) {
         ...state,
         'formConfigs': formConfigs,
         'formConfigMatrix': formConfigMatrix
+      };
+      break;
+    }
+    case CLEAR_FIELD_CONFIG_MATRIX_ACTION: {
+      const fieldConfigMatrix = {};
+      fieldConfigMatrix.title = '';
+      fieldConfigMatrix.id = '';
+      fieldConfigMatrix.fieldName = '';
+      fieldConfigMatrix.fieldType = '';
+      fieldConfigMatrix.placeholder = '';
+      fieldConfigMatrix.defaultValue = '';
+      fieldConfigMatrix.options = {};
+      resultState = {
+        ...state,
+        'fieldConfigMatrix': fieldConfigMatrix
+      };
+      break;
+    }
+    case ADD_FORM_FIELD_ACTION: {
+      const formConfigIndex = action.formConfigIndex,
+          fieldSetIndex = action.fieldSetIndex,
+          formConfigs = [...state.formConfigs],
+          formConfigMatrix = {...state.formConfigMatrix},
+          fieldConfigMatrix = {...state.fieldConfigMatrix};
+      if (formConfigIndex === -1) {
+        formConfigMatrix.fieldSets[fieldSetIndex].fields.push(fieldConfigMatrix);
+      } else {
+        formConfigs[formConfigIndex].fieldSets[fieldSetIndex].fields.push(fieldConfigMatrix);
+      }
+      resultState = {
+        ...state,
+        'formConfigs': formConfigs,
+        'formConfigMatrix': formConfigMatrix
+      };
+      break;
+    }
+    case EDIT_FORM_FIELD_ACTION: {
+      const formConfigIndex = action.formConfigIndex,
+          fieldSetIndex = action.fieldSetIndex,
+          fieldIndex = action.fieldIndex,
+          fieldName = action.fieldName,
+          fieldValue = action.fieldValue,
+          formConfigs = [...state.formConfigs],
+          formConfigMatrix = {...state.formConfigMatrix},
+          fieldConfigMatrix = {...state.fieldConfigMatrix};
+      if (fieldIndex === -1) {
+        fieldConfigMatrix[fieldName] = fieldValue;
+      } else {
+        if (formConfigIndex === -1) {
+          formConfigMatrix.fieldSets[fieldSetIndex].fields[fieldIndex][fieldName] = fieldValue;
+        } else {
+          formConfigs[formConfigIndex].fieldSets[fieldSetIndex].fields[fieldIndex][fieldName] = fieldValue;
+        }
+      }
+      resultState = {
+        ...state,
+        'formConfigs': formConfigs,
+        'formConfigMatrix': formConfigMatrix,
+        'fieldConfigMatrix': fieldConfigMatrix
       };
       break;
     }

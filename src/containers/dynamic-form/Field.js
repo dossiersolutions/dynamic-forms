@@ -38,8 +38,8 @@ class Field extends Component {
             placeholder={this.props.field.placeholder}
             id={this.props.field.id}
             name={this.props.field.name}
-            // readOnly={true}
-            // disabled={true}
+            readOnly={true}
+            disabled={true}
         />
         <span className="inline-action-button-wrapper">
             <button className="inline-action-button" onClick={

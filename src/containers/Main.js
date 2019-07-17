@@ -8,20 +8,20 @@ import PopupWindow from "./popup/PopupWindow";
 
 class Main extends Component {
 
-  onNewFormConfigSubmit(event) {
+  onNewFormConfigSubmit = (event) => {
     event.preventDefault();
     const formConfig = this.props.formConfigMatrix;
     this.props.onAddFormAction(formConfig);
     this.props.onClearFormConfigMatrix();
-  }
+  };
 
-  onFormConfigSubmit(event) {
+  onFormConfigSubmit = (event) => {
     event.preventDefault();
     this.props.onClearFormConfigMatrix();
     this.props.onBackToListPage();
-  }
+  };
 
-  buildAddFormComponent() {
+  buildAddFormComponent = () => {
     return <FormEdit
         formConfig={this.props.formConfigMatrix}
         formConfigIndex={-1}
@@ -30,9 +30,9 @@ class Main extends Component {
         handleFormChanged={this.props.onEditFormAction}
         addFormFieldSetAction={this.props.onAddFormFieldSetAction}
     />;
-  }
+  };
 
-  buildEditFormComponent() {
+  buildEditFormComponent = () => {
     let formConfigs = [...this.props.formConfigs],
         formConfig = formConfigs[this.props.formConfigIndex];
     return <FormEdit
@@ -43,20 +43,20 @@ class Main extends Component {
         handleFormChanged={this.props.onEditFormAction}
         addFormFieldSetAction={this.props.onAddFormFieldSetAction}
     />;
-  }
+  };
 
-  buildFillFormComponent() {
+  buildFillFormComponent = () =>{
     return <FormFill/>;
   }
 
-  buildListFormComponent() {
+  buildListFormComponent = () => {
     return <FormList
         addNewFormAction={this.props.onAddNewFormPage}
         forms={this.props.formConfigs}
         deleteFormConfigAction={this.props.onDeleteFormConfigAction}
         editFormConfigAction={this.props.onEditFormConfigPage}
     />;
-  }
+  };
 
   render() {
     let mainPart, pageName;
@@ -89,7 +89,11 @@ class Main extends Component {
             </nav>
             <div className="main-content">{mainPart}</div>
           </div>
-          { this.props.showPopup ? <PopupWindow popupWindowContent={this.props.popupWindowContent} /> : '' }
+          <PopupWindow
+              showPopup={this.props.showPopup}
+              title={this.props.popupWindowTitle}
+              content={this.props.popupWindowContent}
+          />
         </React.Fragment>;
   };
 }
@@ -98,6 +102,7 @@ function mapStateToProps(state) {
   return {
     mode: state.mode,
     showPopup: state.showPopup,
+    popupWindowTitle: state.popupWindowTitle,
     popupWindowContent: state.popupWindowContent,
     formConfigIndex: state.formConfigIndex,
     formConfigMatrix: state.formConfigMatrix,

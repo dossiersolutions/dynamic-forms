@@ -3,9 +3,9 @@ import {actions} from "../../store";
 import {connect} from "react-redux";
 
 import Field from "./Field";
+import {confirmAlert} from "react-confirm-alert";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEdit, faPlusCircle, faTrash} from "@fortawesome/free-solid-svg-icons";
-import {confirmAlert} from "react-confirm-alert";
 import FieldSetEditPopup from "../../components/dynamic-form/FieldSetEditPopup";
 import FieldEditPopup from "../../components/dynamic-form/FieldEditPopup";
 
@@ -13,22 +13,37 @@ import FieldEditPopup from "../../components/dynamic-form/FieldEditPopup";
 class FieldSet extends Component {
 
   onSubmitEditField = (event) => {
-    console.log(event.target);
-    this.props.onEditFieldAction(
-        this.props.formConfigIndex, this.props.fieldSetIndex, event.target.title.value, 'title'
-    );
+    event.preventDefault();
+    if (parseInt(event.target.fieldIndex.value) === -1) {
+      const { formConfigIndex, fieldSetIndex } = {...this.props};
+      this.props.onAddFieldAction(formConfigIndex, fieldSetIndex);
+      this.props.onClearFieldConfigMatrixAction();
+    }
     this.props.onHidePopupWindowAction();
+  };
+
+  onChangeFieldAction = (fieldIndex, fieldName, fieldValue) => {
+    const { formConfigIndex, fieldSetIndex } = {...this.props};
+    this.props.onEditFieldAction(formConfigIndex, fieldSetIndex, fieldIndex, fieldName, fieldValue);
   };
 
   showEditFieldPopupWindow = (event, field, fieldIndex, isEditFieldMode) => {
     event.preventDefault();
-
-    console.log(fieldIndex);
-
     const title = isEditFieldMode ? 'Edit field' : 'Add field';
-    let content = <FieldEditPopup onSubmitEditField={this.onSubmitEditField} fieldIndex={-1}/>;
+    let content;
     if (isEditFieldMode) {
-      content = <FieldEditPopup onSubmitEditField={this.onSubmitEditField} field={field} fieldIndex={fieldIndex} />;
+      content = <FieldEditPopup
+          field={field}
+          fieldIndex={fieldIndex}
+          onSubmitEditField={this.onSubmitEditField}
+          changeFieldAction={this.onChangeFieldAction}
+      />;
+    } else {
+      content = <FieldEditPopup
+          fieldIndex={-1}
+          onSubmitEditField={this.onSubmitEditField}
+          changeFieldAction={this.onChangeFieldAction}
+      />;
     }
     this.props.onShowPopupWindowAction(title, content);
   };
@@ -36,7 +51,7 @@ class FieldSet extends Component {
   onSubmitEditFieldSet = (event) => {
     event.preventDefault();
     this.props.onFieldSetChangedAction(
-        this.props.formConfigIndex, this.props.fieldSetIndex, event.target.title.value, 'title'
+        this.props.formConfigIndex, this.props.fieldSetIndex, event.target.title.value, event.target.title.name
     );
     this.props.onHidePopupWindowAction();
   };
@@ -92,7 +107,7 @@ class FieldSet extends Component {
             fieldSetIndex={this.props.fieldSetIndex}
             fieldIndex={index}
             field={field}
-            showEditFieldPopupWindow={this.showEditFieldPopupWindow.bind(this)}
+            showEditFieldPopupWindow={this.showEditFieldPopupWindow}
         />
       })}
 
@@ -134,7 +149,13 @@ function mapDispatchToProps(dispatch) {
       dispatch(actions.editFieldSetAction({formConfigIndex, fieldSetIndex, fieldValue, fieldName}));
     },
     onEditFieldAction(formConfigIndex, fieldSetIndex, fieldIndex, fieldName, fieldValue) {
-      dispatch(actions.editFieldAction({formConfigIndex, fieldSetIndex, fieldIndex, fieldName, fieldValue}));
+      dispatch(actions.editFieldAction(formConfigIndex, fieldSetIndex, fieldIndex, fieldName, fieldValue));
+    },
+    onAddFieldAction(formConfigIndex, fieldSetIndex) {
+      dispatch(actions.addFieldAction(formConfigIndex, fieldSetIndex));
+    },
+    onClearFieldConfigMatrixAction() {
+      dispatch(actions.clearFieldConfigMatrixAction());
     }
   }
 }
