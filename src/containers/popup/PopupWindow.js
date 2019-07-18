@@ -9,12 +9,6 @@ const PopupWindow = (props) => {
   let [title, setTitle] = React.useState(props.title);
   let [content, setContent] = React.useState(props.content);
 
-  React.useEffect(() => {
-    setShowPopup(props.showPopup);
-    setTitle(props.title);
-    setContent(props.content);
-  }, [props]);
-
   const closePopupWindow = () => {
     setShowPopup(false);
     setTitle('');

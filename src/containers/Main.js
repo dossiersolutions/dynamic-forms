@@ -47,7 +47,7 @@ class Main extends Component {
 
   buildFillFormComponent = () =>{
     return <FormFill/>;
-  }
+  };
 
   buildListFormComponent = () => {
     return <FormList
