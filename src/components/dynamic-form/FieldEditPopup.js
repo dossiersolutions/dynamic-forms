@@ -7,14 +7,14 @@ function FieldEditPopup(props) {
   };
 
   const {
-    fieldIndex,
-    field: {
-      fieldType,
-      placeholder,
-      defaultValue,
-      title: fieldTitle
-    }
+    field,
+    fieldIndex
   } = {...props};
+
+  const title = field && field.title ? field.title : '';
+  const type = field && field.type ? field.type : '';
+  const placeholder = field && field.placeholder ? field.placeholder : '';
+  const defaultValue = field && field.defaultValue ? field.defaultValue : '';
 
   return <div>
     <form onSubmit={(event) => props.onSubmitEditField(event)}>
@@ -34,7 +34,7 @@ function FieldEditPopup(props) {
             className="form-control"
             id="title"
             name="title"
-            defaultValue={fieldTitle ? fieldTitle : ''}
+            defaultValue={title}
             placeholder="Enter field title..."
             required
             onChange={changeAction}
@@ -47,39 +47,43 @@ function FieldEditPopup(props) {
         </label>
         <select
             className="form-control"
-            defaultValue={fieldType ? fieldType : ''}
+            id="type"
+            name="type"
+            defaultValue={type}
             disabled={fieldIndex !== -1}
+            onChange={changeAction}
         >
           <option value=''>--</option>
           <option value="text">Text</option>
           <option value="email">Email</option>
           <option value="radio">Radio</option>
           <option value="select">Select</option>
+          <option value="checkbox">Checkbox</option>
           <option value="textarea">Textarea</option>
         </select>
       </div>
 
-      <div className="form-group">
+      <div className={['text', 'email', 'textarea'].indexOf(type) !== -1 ? 'form-group' : 'form-group d-none'}>
         <label className="control-label" htmlFor="placeholder"><strong>Placeholder</strong></label>
         <input
             type="text"
             className="form-control"
             id="placeholder"
             name="placeholder"
-            defaultValue={placeholder ? placeholder : ''}
+            defaultValue={placeholder}
             placeholder="Enter field placeholder..."
             onChange={changeAction}
         />
       </div>
 
-      <div className="form-group">
+      <div className={['text', 'email', 'textarea'].indexOf(type) !== -1 ? 'form-group' : 'form-group d-none'}>
         <label className="control-label" htmlFor="defaultValue"><strong>Default value</strong></label>
         <input
             type="text"
             className="form-control"
             id="defaultValue"
             name="defaultValue"
-            defaultValue={defaultValue ? defaultValue : ''}
+            defaultValue={defaultValue}
             placeholder="Enter field default value..."
             onChange={changeAction}
         />

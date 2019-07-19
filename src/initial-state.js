@@ -11,8 +11,8 @@ export const initialState = {
   },
   'fieldConfigMatrix': {
     'id': '',
-    'fieldName': '',
-    'fieldType': '',
+    'name': '',
+    'type': '',
     'title': '',
     'placeholder': '',
     'defaultValue': '',
@@ -28,34 +28,42 @@ export const initialState = {
           'fields': [
             {
               'id': 'FirstName',
-              'fieldName': 'FirstName',
-              'fieldType': 'text',
+              'name': 'FirstName',
+              'type': 'text',
               'title': 'First name',
               'placeholder': 'Enter first name...',
               'defaultValue': '',
               'options': {}
             }, {
               'id': 'MiddleName',
-              'fieldName': 'MiddleName',
-              'fieldType': 'text',
+              'name': 'MiddleName',
+              'type': 'text',
               'title': 'Middle name',
               'placeholder': 'Enter middle name...',
               'defaultValue': '',
               'options': {}
             }, {
               'id': 'LastName',
-              'fieldName': 'LastName',
-              'fieldType': 'text',
+              'name': 'LastName',
+              'type': 'text',
               'title': 'Middle name',
               'placeholder': 'Enter last name...',
               'defaultValue': '',
               'options': {}
             }, {
               'id': 'Email',
-              'fieldName': 'Email',
-              'fieldType': 'text',
+              'name': 'Email',
+              'type': 'email',
               'title': 'Email',
               'placeholder': 'Enter email...',
+              'defaultValue': '',
+              'options': {}
+            }, {
+              'id': 'Note',
+              'name': 'Note',
+              'type': 'textarea',
+              'title': 'Note',
+              'placeholder': 'Enter note...',
               'defaultValue': '',
               'options': {}
             }
@@ -71,32 +79,32 @@ export const initialState = {
           'fields': [
             {
               'id': 'FirstName',
-              'fieldName': 'FirstName',
-              'fieldType': 'text',
+              'name': 'FirstName',
+              'type': 'text',
               'title': 'First name',
               'placeholder': 'Enter first name...',
               'defaultValue': '',
               'options': {}
             }, {
               'id': 'MiddleName',
-              'fieldName': 'MiddleName',
-              'fieldType': 'text',
+              'name': 'MiddleName',
+              'type': 'text',
               'title': 'Middle name',
               'placeholder': 'Enter middle name...',
               'defaultValue': '',
               'options': {}
             }, {
               'id': 'LastName',
-              'fieldName': 'LastName',
-              'fieldType': 'text',
+              'name': 'LastName',
+              'type': 'text',
               'title': 'Last name',
               'placeholder': 'Enter last name...',
               'defaultValue': '',
               'options': {}
             }, {
               'id': 'Email',
-              'fieldName': 'Email',
-              'fieldType': 'text',
+              'name': 'Email',
+              'type': 'text',
               'title': 'Email',
               'placeholder': 'Enter email...',
               'defaultValue': '',

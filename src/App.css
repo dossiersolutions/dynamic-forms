@@ -172,6 +172,15 @@ legend {
   display: block;
   width: 100%;
 }
+.form-group.form-group-radio .form-control,
+.form-group.form-group-checkbox .form-control {
+  border: 0;
+  background: transparent;
+}
+.form-group.form-group-radio .form-control input,
+.form-group.form-group-checkbox .form-control input {
+  vertical-align: middle;
+}
 .react-confirm-alert .react-confirm-alert-body .react-confirm-alert-button-group button:first-child {
   background: red;
   color: white;

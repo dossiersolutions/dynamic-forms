@@ -134,7 +134,6 @@ export const actions = {
 };
 
 export function reducer(state = initialState, action) {
-  console.log(action.type);
   let im_state = Immutable.Map(state);
   switch (action.type) {
     case BACK_TO_LIST_PAGE: {

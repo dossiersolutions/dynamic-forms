@@ -1,20 +1,19 @@
-import React, { Component } from 'react';
-import { actions } from "../../store";
-import { connect } from "react-redux";
+import React, {Component} from 'react';
+import {actions} from "../../store";
+import {connect} from "react-redux";
 import Field from "./Field";
-import { confirmAlert } from "react-confirm-alert";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit, faPlusCircle, faTrash } from "@fortawesome/free-solid-svg-icons";
+import {confirmAlert} from "react-confirm-alert";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faEdit, faPlusCircle, faTrash} from "@fortawesome/free-solid-svg-icons";
 import FieldSetEditPopup from "../../components/dynamic-form/FieldSetEditPopup";
 import FieldEditPopup from "../../components/dynamic-form/FieldEditPopup";
-
 
 class FieldSet extends Component {
 
   onSubmitEditField = (event) => {
     event.preventDefault();
     if (parseInt(event.target.fieldIndex.value) === -1) {
-      const { formConfigIndex, fieldSetIndex } = {...this.props};
+      const {formConfigIndex, fieldSetIndex} = {...this.props};
       this.props.onAddFieldAction(formConfigIndex, fieldSetIndex);
       this.props.onClearFieldConfigMatrixAction();
     }
@@ -22,7 +21,7 @@ class FieldSet extends Component {
   };
 
   onChangeFieldAction = (fieldIndex, fieldName, fieldValue) => {
-    const { formConfigIndex, fieldSetIndex } = {...this.props};
+    const {formConfigIndex, fieldSetIndex} = {...this.props};
     this.props.onEditFieldAction(formConfigIndex, fieldSetIndex, fieldIndex, fieldName, fieldValue);
   };
 
@@ -37,7 +36,8 @@ class FieldSet extends Component {
           onSubmitEditField={this.onSubmitEditField}
           changeFieldAction={this.onChangeFieldAction}
       />;
-    } else {
+    }
+    else {
       content = <FieldEditPopup
           fieldIndex={-1}
           onSubmitEditField={this.onSubmitEditField}
@@ -49,16 +49,17 @@ class FieldSet extends Component {
 
   onSubmitEditFieldSet = (event) => {
     event.preventDefault();
-    const { value, name } = {...event.target.title};
-    const { formConfigIndex, fieldSetIndex } = {...this.props };
+    const {value, name} = {...event.target.title};
+    const {formConfigIndex, fieldSetIndex} = {...this.props};
     this.props.onFieldSetChangedAction(formConfigIndex, fieldSetIndex, value, name);
     this.props.onHidePopupWindowAction();
   };
 
   showEditFieldSetPopupWindow = (event) => {
     event.preventDefault();
+    const { fieldSet } = {...this.props};
     const title = 'Edit field set';
-    const content = <FieldSetEditPopup onSubmitEditFieldSet={this.onSubmitEditFieldSet} fieldSet={this.props.fieldSet} />;
+    const content = <FieldSetEditPopup onSubmitEditFieldSet={this.onSubmitEditFieldSet} fieldSet={fieldSet}/>;
     this.props.onShowPopupWindowAction(title, content);
   };
 
@@ -75,7 +76,8 @@ class FieldSet extends Component {
         },
         {
           label: 'No',
-          onClick: () => {}
+          onClick: () => {
+          }
         }
       ]
     });
@@ -87,9 +89,19 @@ class FieldSet extends Component {
   };
 
   render() {
+
+    const {
+      fieldSet: {
+        title: fieldSetTitle,
+        fields: fieldSetFields
+      },
+      fieldSetIndex,
+      formConfigIndex
+    } = {...this.props};
+
     return <fieldset className="form-group">
-      <legend className="field-set-legend" >
-        <strong>{this.props.fieldSet.title}</strong>
+      <legend className="field-set-legend">
+        <strong>{fieldSetTitle}</strong>
         <span className="inline-action-button-wrapper">
           <button className="inline-action-button" onClick={(event) => this.showEditFieldSetPopupWindow(event)}>
             <FontAwesomeIcon icon={faEdit} className="action-icon"/>
@@ -101,20 +113,22 @@ class FieldSet extends Component {
           </button>
         </span>
       </legend>
-      {this.props.fieldSet.fields.map((field, index) => {
+      {fieldSetFields.map((field, index) => {
         return <Field
             key={index}
-            formConfigIndex={this.props.formConfigIndex}
-            fieldSetIndex={this.props.fieldSetIndex}
-            fieldIndex={index}
             field={field}
+            fieldIndex={index}
+            fieldSetIndex={formConfigIndex}
+            formConfigIndex={fieldSetIndex}
+            fieldReadOnly={true}
+            fieldDisabled={true}
             showEditFieldPopupWindow={this.showEditFieldPopupWindow}
         />
       })}
 
       <div className="form-group text-right">
         <button type="button" className="btn btn-primary" onClick={(event) => this.showEditFieldPopupWindow(event)}>
-          <FontAwesomeIcon icon={faPlusCircle} /> Add field
+          <FontAwesomeIcon icon={faPlusCircle}/> Add field
         </button>
       </div>
 
