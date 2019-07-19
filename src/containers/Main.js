@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
-import {actions} from '../store';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { actions } from '../store';
 import FormList from "../components/list/FormList";
 import FormEdit from "../components/dynamic-form/FormEdit";
 import FormFill from "../components/FormFill";
@@ -100,13 +100,13 @@ class Main extends Component {
 
 function mapStateToProps(state) {
   return {
-    mode: state.mode,
-    showPopup: state.showPopup,
-    popupWindowTitle: state.popupWindowTitle,
-    popupWindowContent: state.popupWindowContent,
-    formConfigIndex: state.formConfigIndex,
-    formConfigMatrix: state.formConfigMatrix,
-    formConfigs: state.formConfigs
+    mode: state.get('mode'),
+    showPopup: state.get('showPopup'),
+    popupWindowTitle: state.get('popupWindowTitle'),
+    popupWindowContent: state.get('popupWindowContent'),
+    formConfigIndex: state.get('formConfigIndex'),
+    formConfigMatrix: state.get('formConfigMatrix'),
+    formConfigs: state.get('formConfigs')
   };
 }
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import FormListItem from "./FormListItem";
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faPlusCircle} from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPlusCircle } from '@fortawesome/free-solid-svg-icons'
 
 const FormList = (props) => {
   return <div className="content-wrapper content-wrapper-form-list">

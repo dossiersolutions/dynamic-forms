@@ -1,9 +1,18 @@
 import React from 'react';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faArrowLeft, faPlusCircle} from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faArrowLeft, faPlusCircle } from '@fortawesome/free-solid-svg-icons'
 import FieldSet from "../../containers/dynamic-form/FieldSet";
 
 const FormEdit = (props) => {
+
+  const {
+    formConfig: {
+      formName,
+      formType,
+      fieldSets
+    },
+    formConfigIndex
+  } = {...props};
 
   return <div className="content-wrapper content-wrapper-dynamic-form content-wrapper-edit-form">
     <div className="control-buttons">
@@ -20,8 +29,8 @@ const FormEdit = (props) => {
             className="form-control required"
             id="formName"
             name="formName"
-            value={props.formConfig.formName}
-            onChange={(event) => props.handleFormChanged(props.formConfigIndex, event.target.value, event.target.name)}
+            value={formName}
+            onChange={(event) => props.handleFormChanged(formConfigIndex, event.target.value, event.target.name)}
             placeholder="Enter form name..."
             required
         />
@@ -33,8 +42,8 @@ const FormEdit = (props) => {
             className="form-control"
             id="formType"
             name="formType"
-            value={props.formConfig.formType}
-            onChange={(event) => props.handleFormChanged(props.formConfigIndex, event.target.value, event.target.name)}
+            value={formType}
+            onChange={(event) => props.handleFormChanged(formConfigIndex, event.target.value, event.target.name)}
             placeholder="Enter form type..."
         />
       </div>
@@ -43,7 +52,7 @@ const FormEdit = (props) => {
 
         <legend>Form config</legend>
 
-        {props.formConfig.fieldSets.map((fieldSet, index) => {
+        {fieldSets.map((fieldSet, index) => {
           return <FieldSet
               key={index}
               fieldSetIndex={index}
@@ -55,7 +64,7 @@ const FormEdit = (props) => {
           <button
               type="button"
               className="btn btn-primary"
-              onClick={() => props.addFormFieldSetAction(props.formConfigIndex, 'FIELD SET TITLE')}
+              onClick={() => props.addFormFieldSetAction(formConfigIndex, 'FIELD SET TITLE')}
           >
             <FontAwesomeIcon icon={faPlusCircle}/> Add fieldset
           </button>

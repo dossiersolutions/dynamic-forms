@@ -58,15 +58,6 @@ class Field extends Component {
 
 }
 
-function mapStateToProps(state) {
-  return {
-    mode: state.mode,
-    formConfigIndex: state.formConfigIndex,
-    formConfigMatrix: state.formConfigMatrix,
-    formConfigs: state.formConfigs
-  };
-}
-
 function mapDispatchToProps(dispatch) {
   return {
     onDeleteFieldAction(formConfigIndex, fieldSetIndex, fieldIndex) {
@@ -75,4 +66,4 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Field);
+export default connect(null, mapDispatchToProps)(Field);

@@ -6,6 +6,16 @@ function FieldEditPopup(props) {
     props.changeFieldAction(props.fieldIndex, event.target.name, event.target.value);
   };
 
+  const {
+    fieldIndex,
+    field: {
+      fieldType,
+      placeholder,
+      defaultValue,
+      title: fieldTitle
+    }
+  } = {...props};
+
   return <div>
     <form onSubmit={(event) => props.onSubmitEditField(event)}>
 
@@ -14,7 +24,7 @@ function FieldEditPopup(props) {
           className="form-control"
           id="fieldIndex"
           name="fieldIndex"
-          defaultValue={props.fieldIndex ? props.fieldIndex : -1}
+          defaultValue={fieldIndex !== undefined ? parseInt(fieldIndex) : -1}
       />
 
       <div className="form-group required">
@@ -24,7 +34,7 @@ function FieldEditPopup(props) {
             className="form-control"
             id="title"
             name="title"
-            defaultValue={props.field && props.field.title ? props.field.title : ''}
+            defaultValue={fieldTitle ? fieldTitle : ''}
             placeholder="Enter field title..."
             required
             onChange={changeAction}
@@ -37,8 +47,8 @@ function FieldEditPopup(props) {
         </label>
         <select
             className="form-control"
-            defaultValue={props.field && props.field.fieldType ? props.field.fieldType : ''}
-            disabled={props.fieldIndex !== -1}
+            defaultValue={fieldType ? fieldType : ''}
+            disabled={fieldIndex !== -1}
         >
           <option value=''>--</option>
           <option value="text">Text</option>
@@ -56,7 +66,7 @@ function FieldEditPopup(props) {
             className="form-control"
             id="placeholder"
             name="placeholder"
-            defaultValue={props.field && props.field.placeholder ? props.field.placeholder : ''}
+            defaultValue={placeholder ? placeholder : ''}
             placeholder="Enter field placeholder..."
             onChange={changeAction}
         />
@@ -69,7 +79,7 @@ function FieldEditPopup(props) {
             className="form-control"
             id="defaultValue"
             name="defaultValue"
-            defaultValue={props.field && props.field.defaultValue ? props.field.defaultValue : ''}
+            defaultValue={defaultValue ? defaultValue : ''}
             placeholder="Enter field default value..."
             onChange={changeAction}
         />

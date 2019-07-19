@@ -1,16 +1,22 @@
 import React from 'react';
 import 'react-confirm-alert/src/react-confirm-alert.css';
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faTimes} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
 
 const PopupWindow = (props) => {
 
-  let [showPopup, setShowPopup] = React.useState(props.showPopup);
+  let [showPopup, setShowPopupWindow] = React.useState(props.showPopup);
   let [title, setTitle] = React.useState(props.title);
   let [content, setContent] = React.useState(props.content);
 
+  React.useEffect(() => {
+    setShowPopupWindow(props.showPopup);
+    setTitle(props.title);
+    setContent(props.content);
+  }, [props]);
+
   const closePopupWindow = () => {
-    setShowPopup(false);
+    setShowPopupWindow(false);
     setTitle('');
     setContent('');
   };
@@ -24,15 +30,8 @@ const PopupWindow = (props) => {
                 <div className="react-confirm-alert-header">
                   <div className="react-confirm-alert-header-title">{title}</div>
                   <div className="react-confirm-alert-header-buttons">
-                    <button className="inline-action-button">
-                      <FontAwesomeIcon
-                          icon={faTimes}
-                          className="action-icon icon-red"
-                          onClick={(event) => {
-                            event.preventDefault();
-                            closePopupWindow();
-                          }}
-                      />
+                    <button className="inline-action-button" onClick={(event) => {event.preventDefault(); closePopupWindow();}}>
+                      <FontAwesomeIcon icon={faTimes} className="action-icon icon-red"/>
                     </button>
                   </div>
                 </div>

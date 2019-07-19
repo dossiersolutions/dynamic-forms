@@ -106,6 +106,7 @@ legend {
   height: 20px;
   background: none;
   border: 0;
+  padding: 0;
 }
 .main-container .content-wrapper .inline-action-button-wrapper .inline-action-button .action-icon {
   width: 20px;

@@ -1,4 +1,5 @@
 import { initialState } from './initial-state';
+import Immutable from "immutable";
 
 const BACK_TO_LIST_PAGE = 'BACK_TO_LIST_PAGE';
 const ADD_NEW_FORM_CONFIG_PAGE = 'ADD_NEW_FORM_CONFIG_PAGE';
@@ -132,240 +133,182 @@ export const actions = {
   }
 };
 
-
-/* @TODO Try with immutable.js where is applicable */
 export function reducer(state = initialState, action) {
-  let resultState;
+  console.log(action.type);
+  let im_state = Immutable.Map(state);
   switch (action.type) {
     case BACK_TO_LIST_PAGE: {
-      resultState = {
-        ...state,
-        'mode': 'list'
-      };
-      break;
+      return im_state.set('mode', 'list')
+          .set('showPopup', false)
+          .set('popupWindowTitle', '')
+          .set('popupWindowContent', '');
     }
     case ADD_NEW_FORM_CONFIG_PAGE: {
-      resultState = {
-        ...state,
-        'mode': 'add'
-      };
-      break;
+      return im_state.set('mode', 'add')
+          .set('showPopup', false)
+          .set('popupWindowTitle', '')
+          .set('popupWindowContent', '');
     }
     case CLEAR_FORM_CONFIG_MATRIX_ACTION: {
-      const formConfigMatrix = {...state.formConfigMatrix};
-      formConfigMatrix.formName = '';
-      formConfigMatrix.formType = '';
-      formConfigMatrix.fieldSets = [];
-      resultState = {
-        ...state,
-        'formConfigMatrix': formConfigMatrix
-      };
-      break;
+      return im_state.set('showPopup', false)
+          .set('popupWindowTitle', '')
+          .set('popupWindowContent', '')
+          .setIn(['formConfigMatrix', 'formName'], '')
+          .setIn(['formConfigMatrix', 'formType'], '')
+          .setIn(['formConfigMatrix', 'fieldSets'], []);
     }
     case SHOW_POPUP_WINDOW_ACTION: {
-      resultState = {
-        ...state,
-        'showPopup': true,
-        'popupWindowTitle' : action.popupWindowTitle,
-        'popupWindowContent' : action.popupWindowContent
-      };
-      break;
+      return im_state.set('showPopup', true)
+          .set('popupWindowTitle', action.popupWindowTitle)
+          .set('popupWindowContent', action.popupWindowContent);
     }
     case HIDE_POPUP_WINDOW_ACTION: {
-      resultState = {
-        ...state,
-        'showPopup': false,
-        'popupWindowTitle' : '',
-        'popupWindowContent' : ''
-      };
-      break;
+      return im_state.set('showPopup', false)
+          .set('popupWindowTitle', '')
+          .set('popupWindowContent', '');
     }
     case EDIT_FORM_CONFIG_PAGE: {
-      resultState = {
-        ...state,
-        'mode': 'edit',
-        'formConfigIndex' : action.formConfigIndex
-      };
-      break;
+      return im_state.set('mode', 'edit')
+          .set('showPopup', false)
+          .set('popupWindowTitle', '')
+          .set('popupWindowContent', '')
+          .set('formConfigIndex', action.formConfigIndex);
     }
     case DELETE_FORM_CONFIG_ACTION: {
-      const formConfigs = [...state.formConfigs];
-      formConfigs.splice(action.formConfigIndex, 1);
-      resultState = {
-        ...state,
-        'mode': 'list',
-        'showPopup': true,
-        'formConfigs': formConfigs
-      };
-      break;
+      let im_formConfigs = Immutable.List(im_state.get('formConfigs'));
+      return im_state.set('mode', 'list')
+          .set('showPopup', false)
+          .set('popupWindowTitle', '')
+          .set('popupWindowContent', '')
+          .set('formConfigs', im_formConfigs.delete(action.formConfigIndex));
     }
     case ADD_FORM_ACTION: {
-      resultState = {
-        ...state,
-        'mode': 'list',
-        'formConfigs': [...state.formConfigs, action.formConfig]
-      };
-      break;
+      let im_formConfigs = Immutable.List(im_state.get('formConfigs'));
+      return im_state.set('mode', 'list')
+          .set('formConfigs', im_formConfigs.push(action.formConfig));
     }
     case EDIT_FORM_ACTION: {
-      const formConfigs = [...state.formConfigs],
-          formConfigMatrix = {...state.formConfigMatrix};
       if (action.formConfigIndex === -1) {
-        formConfigMatrix[action.fieldName] = action.fieldValue;
+        let im_formConfigMatrix = Immutable.Map(im_state.get('formConfigMatrix'));
+        im_formConfigMatrix = im_formConfigMatrix.set(action.fieldName, action.fieldValue);
+        im_state = im_state.set('formConfigMatrix', im_formConfigMatrix.toJS());
       } else {
-        formConfigs[action.formConfigIndex][action.fieldName] = action.fieldValue;
+        let im_formConfigs = Immutable.List(im_state.get('formConfigs'));
+        im_formConfigs = im_formConfigs.setIn([action.formConfigIndex, action.fieldName], action.fieldValue);
+        im_state = im_state.set('formConfigs', im_formConfigs);
       }
-      resultState = {
-        ...state,
-        'formConfigMatrix': formConfigMatrix,
-        'formConfigs': formConfigs
-      };
-      break;
+      return im_state;
     }
     case ADD_FORM_FIELDSET_ACTION: {
       const formConfigIndex = action.formConfigIndex,
-          fieldsetTitle = action.fieldsetTitle;
-      let formConfigs = [...state.formConfigs],
-          formConfigMatrix = {...state.formConfigMatrix},
-        newFieldSet = {
-          'title': fieldsetTitle,
-          'fields': []
-        };
+          fieldsetTitle = action.fieldsetTitle,
+          newFieldSet = Immutable.Map({'title': fieldsetTitle, 'fields': []});
       if (formConfigIndex === -1) {
-        formConfigMatrix.fieldSets.push(newFieldSet);
+        let im_formConfigMatrix = Immutable.Map(im_state.get('formConfigMatrix'));
+        im_formConfigMatrix.update('fieldSets', fieldSets => fieldSets.push(newFieldSet));
+        im_state = im_state.set('formConfigMatrix', im_formConfigMatrix.toJS());
       } else {
-        formConfigs[formConfigIndex].fieldSets.push(newFieldSet);
+        let im_formConfigs = Immutable.List(im_state.get('formConfigs'));
+        im_formConfigs.updateIn([formConfigIndex, 'fieldSets'], fieldSets => fieldSets.push(newFieldSet));
+        im_state = im_state.set('formConfigs', im_formConfigs.toJS());
       }
-      resultState = {
-        ...state,
-        'formConfigs': formConfigs,
-        'formConfigMatrix': formConfigMatrix
-      };
-      break;
+      return im_state;
     }
     case DELETE_FORM_FIELDSET_ACTION: {
-      /* @TODO Try with immutable.js */
-      const /*{ fromJS } = require('immutable'),*/
-          formConfigIndex = action.formConfigIndex,
-          fieldSetIndex = action.fieldSetIndex,
-          // formConfigs = fromJS(state.formConfigs),
-          // formConfigMatrix = fromJS(state.formConfigMatrix);
-          formConfigs = [...state.formConfigs],
-          formConfigMatrix = {...state.formConfigMatrix};
+      const formConfigIndex = action.formConfigIndex,
+          fieldSetIndex = action.fieldSetIndex;
       if (formConfigIndex === -1) {
-        formConfigMatrix.fieldSets.splice(fieldSetIndex, 1);
-        // formConfigMatrix.updateIn(['fieldSets'], fieldSets => fieldSets.splice(fieldSetIndex, 1));
+        let im_formConfigMatrix = Immutable.Map(im_state.get('formConfigMatrix'));
+        im_formConfigMatrix = im_formConfigMatrix.update('fieldSets', fieldSets => Immutable.List(fieldSets).delete(fieldSetIndex));
+        im_state = im_state.set('formConfigMatrix', im_formConfigMatrix);
       } else {
-        formConfigs[formConfigIndex].fieldSets.splice(fieldSetIndex, 1);
-        // formConfigs.updateIn([formConfigIndex, 'fieldSets'], fieldSets => fieldSets.splice(fieldSetIndex, 1));
+        let im_formConfigs = Immutable.List(im_state.get('formConfigs'));
+        im_formConfigs = im_formConfigs.updateIn([formConfigIndex, 'fieldSets'], fieldSets => Immutable.List(fieldSets).delete(fieldSetIndex));
+        im_state = im_state.set('formConfigs', im_formConfigs);
       }
-      resultState = {
-        ...state,
-        'formConfigs': formConfigs,
-        'formConfigMatrix': formConfigMatrix
-      };
-      break;
+      return im_state;
     }
     case EDIT_FORM_FIELDSET_ACTION: {
       const formConfigIndex = action.formConfigIndex,
           fieldSetIndex = action.fieldSetIndex,
           fieldName = action.fieldName,
-          fieldValue = action.fieldValue,
-          formConfigs = [...state.formConfigs],
-          formConfigMatrix = {...state.formConfigMatrix};
+          fieldValue = action.fieldValue;
       if (formConfigIndex === -1) {
-        formConfigMatrix.fieldSets[fieldSetIndex][fieldName] = fieldValue;
+        let im_formConfigMatrix = Immutable.Map(im_state.get('formConfigMatrix'));
+        im_formConfigMatrix = im_formConfigMatrix.setIn(['fieldSets', fieldSetIndex, fieldName], fieldValue);
+        im_state = im_state.set('formConfigMatrix', im_formConfigMatrix);
       } else {
-        formConfigs[formConfigIndex].fieldSets[fieldSetIndex][fieldName] = fieldValue;
+        let im_formConfigs = Immutable.List(im_state.get('formConfigs'));
+        im_formConfigs = im_formConfigs.setIn([formConfigIndex, 'fieldSets', fieldSetIndex, fieldName], fieldValue);
+        im_state = im_state.set('formConfigs', im_formConfigs);
       }
-      resultState = {
-        ...state,
-        'formConfigs': formConfigs,
-        'formConfigMatrix': formConfigMatrix
-      };
-      break;
+      return im_state;
     }
     case DELETE_FORM_FIELD_ACTION: {
       const formConfigIndex = action.formConfigIndex,
           fieldSetIndex = action.fieldSetIndex,
-          fieldIndex = action.fieldIndex,
-          formConfigs = [...state.formConfigs],
-          formConfigMatrix = {...state.formConfigMatrix};
+          fieldIndex = action.fieldIndex;
       if (formConfigIndex === -1) {
-        formConfigMatrix.fieldSets[fieldSetIndex].fields.splice(fieldIndex, 1);
+        let im_formConfigMatrix = Immutable.Map(im_state.get('formConfigMatrix'));
+        im_formConfigMatrix = im_formConfigMatrix.updateIn(['fieldSets', fieldSetIndex, 'fields'], fields => Immutable.List(fields).delete(fieldIndex));
+        im_state = im_state.set('formConfigMatrix', im_formConfigMatrix);
       } else {
-        formConfigs[formConfigIndex].fieldSets[fieldSetIndex].fields.splice(fieldIndex, 1);
+        let im_formConfigs = Immutable.List(im_state.get('formConfigs'));
+        im_formConfigs = im_formConfigs.updateIn([formConfigIndex, 'fieldSets', fieldSetIndex, 'fields'], fields => Immutable.List(fields).delete(fieldIndex));
+        im_state = im_state.set('formConfigs', im_formConfigs);
       }
-      resultState = {
-        ...state,
-        'formConfigs': formConfigs,
-        'formConfigMatrix': formConfigMatrix
-      };
-      break;
+      return im_state;
     }
     case CLEAR_FIELD_CONFIG_MATRIX_ACTION: {
-      const fieldConfigMatrix = {};
-      fieldConfigMatrix.title = '';
-      fieldConfigMatrix.id = '';
-      fieldConfigMatrix.fieldName = '';
-      fieldConfigMatrix.fieldType = '';
-      fieldConfigMatrix.placeholder = '';
-      fieldConfigMatrix.defaultValue = '';
-      fieldConfigMatrix.options = {};
-      resultState = {
-        ...state,
-        'fieldConfigMatrix': fieldConfigMatrix
-      };
-      break;
+      return im_state.set('fieldConfigMatrix', {})
+          .setIn(['fieldConfigMatrix', 'id'], '')
+          .setIn(['fieldConfigMatrix', 'title'], '')
+          .setIn(['fieldConfigMatrix', 'fieldName'], '')
+          .setIn(['fieldConfigMatrix', 'fieldType'], '')
+          .setIn(['fieldConfigMatrix', 'placeholder'], '')
+          .setIn(['fieldConfigMatrix', 'defaultValue'], '')
+          .setIn(['fieldConfigMatrix', 'options'], {});
     }
     case ADD_FORM_FIELD_ACTION: {
       const formConfigIndex = action.formConfigIndex,
           fieldSetIndex = action.fieldSetIndex,
-          formConfigs = [...state.formConfigs],
-          formConfigMatrix = {...state.formConfigMatrix},
-          fieldConfigMatrix = {...state.fieldConfigMatrix};
+          fieldConfigMatrix = Immutable.Map(im_state.get('fieldConfigMatrix'));
       if (formConfigIndex === -1) {
-        formConfigMatrix.fieldSets[fieldSetIndex].fields.push(fieldConfigMatrix);
+        let im_formConfigMatrix = Immutable.Map(im_state.get('formConfigMatrix'));
+        im_formConfigMatrix = im_formConfigMatrix.updateIn(['fieldSets', fieldSetIndex, 'fields'], fields => Immutable.List(fields).push(fieldConfigMatrix.toJS()));
+        im_state = im_state.set('formConfigMatrix', im_formConfigMatrix);
       } else {
-        formConfigs[formConfigIndex].fieldSets[fieldSetIndex].fields.push(fieldConfigMatrix);
+        let im_formConfigs = Immutable.List(im_state.get('formConfigs'));
+        im_formConfigs = im_formConfigs.updateIn([formConfigIndex, 'fieldSets', fieldSetIndex, 'fields'], fields => Immutable.List(fields).push(fieldConfigMatrix.toJS()));
+        im_state = im_state.set('formConfigs', im_formConfigs);
       }
-      resultState = {
-        ...state,
-        'formConfigs': formConfigs,
-        'formConfigMatrix': formConfigMatrix
-      };
-      break;
+      return im_state;
     }
     case EDIT_FORM_FIELD_ACTION: {
       const formConfigIndex = action.formConfigIndex,
           fieldSetIndex = action.fieldSetIndex,
           fieldIndex = action.fieldIndex,
           fieldName = action.fieldName,
-          fieldValue = action.fieldValue,
-          formConfigs = [...state.formConfigs],
-          formConfigMatrix = {...state.formConfigMatrix},
-          fieldConfigMatrix = {...state.fieldConfigMatrix};
+          fieldValue = action.fieldValue;
       if (fieldIndex === -1) {
-        fieldConfigMatrix[fieldName] = fieldValue;
+        let fieldConfigMatrix = Immutable.Map(im_state.get('fieldConfigMatrix'));
+        fieldConfigMatrix = fieldConfigMatrix.set(fieldName, fieldValue);
+        im_state = im_state.set('fieldConfigMatrix', fieldConfigMatrix);
       } else {
         if (formConfigIndex === -1) {
-          formConfigMatrix.fieldSets[fieldSetIndex].fields[fieldIndex][fieldName] = fieldValue;
+          let im_formConfigMatrix = Immutable.Map(im_state.get('formConfigMatrix'));
+          im_formConfigMatrix = im_formConfigMatrix.setIn(['fieldSets', fieldSetIndex, 'fields', fieldIndex, fieldName], fieldValue);
+          im_state = im_state.set('formConfigMatrix', im_formConfigMatrix);
         } else {
-          formConfigs[formConfigIndex].fieldSets[fieldSetIndex].fields[fieldIndex][fieldName] = fieldValue;
+          let im_formConfigs = Immutable.List(im_state.get('formConfigs'));
+          im_formConfigs = im_formConfigs.setIn([formConfigIndex, 'fieldSets', fieldSetIndex, 'fields', fieldIndex, fieldName], fieldValue);
+          im_state = im_state.set('formConfigs', im_formConfigs);
         }
       }
-      resultState = {
-        ...state,
-        'formConfigs': formConfigs,
-        'formConfigMatrix': formConfigMatrix,
-        'fieldConfigMatrix': fieldConfigMatrix
-      };
-      break;
+      return im_state;
     }
     default: {
-      resultState = state;
-      break;
+      return im_state;
     }
   }
-  return resultState;
 }

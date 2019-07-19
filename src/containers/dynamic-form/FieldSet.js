@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import {actions} from "../../store";
-import {connect} from "react-redux";
-
+import { actions } from "../../store";
+import { connect } from "react-redux";
 import Field from "./Field";
-import {confirmAlert} from "react-confirm-alert";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faEdit, faPlusCircle, faTrash} from "@fortawesome/free-solid-svg-icons";
+import { confirmAlert } from "react-confirm-alert";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEdit, faPlusCircle, faTrash } from "@fortawesome/free-solid-svg-icons";
 import FieldSetEditPopup from "../../components/dynamic-form/FieldSetEditPopup";
 import FieldEditPopup from "../../components/dynamic-form/FieldEditPopup";
 
@@ -50,9 +49,9 @@ class FieldSet extends Component {
 
   onSubmitEditFieldSet = (event) => {
     event.preventDefault();
-    this.props.onFieldSetChangedAction(
-        this.props.formConfigIndex, this.props.fieldSetIndex, event.target.title.value, event.target.title.name
-    );
+    const { value, name } = {...event.target.title};
+    const { formConfigIndex, fieldSetIndex } = {...this.props };
+    this.props.onFieldSetChangedAction(formConfigIndex, fieldSetIndex, value, name);
     this.props.onHidePopupWindowAction();
   };
 
@@ -65,13 +64,14 @@ class FieldSet extends Component {
 
   confirmDeleteFieldSet = (event) => {
     event.preventDefault();
+    const { formConfigIndex, fieldSetIndex } = {...this.props};
     confirmAlert({
       title: 'Are you sure ??',
       message: 'Are you sure you want to delete this field set ??',
       buttons: [
         {
           label: 'Yes',
-          onClick: () => this.deleteFieldSetAction(this.props.formConfigIndex, this.props.fieldSetIndex)
+          onClick: () => this.deleteFieldSetAction(formConfigIndex, fieldSetIndex)
         },
         {
           label: 'No',
@@ -104,6 +104,7 @@ class FieldSet extends Component {
       {this.props.fieldSet.fields.map((field, index) => {
         return <Field
             key={index}
+            formConfigIndex={this.props.formConfigIndex}
             fieldSetIndex={this.props.fieldSetIndex}
             fieldIndex={index}
             field={field}
@@ -124,10 +125,10 @@ class FieldSet extends Component {
 
 function mapStateToProps(state) {
   return {
-    mode: state.mode,
-    formConfigIndex: state.formConfigIndex,
-    formConfigMatrix: state.formConfigMatrix,
-    formConfigs: state.formConfigs
+    mode: state.get('mode'),
+    formConfigIndex: state.get('formConfigIndex'),
+    formConfigMatrix: state.get('formConfigMatrix'),
+    formConfigs: state.get('formConfigs')
   };
 }
 

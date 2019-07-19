@@ -1,9 +1,8 @@
-import React, {Component} from 'react';
-import {confirmAlert} from 'react-confirm-alert';
+import React, { Component } from 'react';
+import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faEdit} from '@fortawesome/free-solid-svg-icons'
-import {faTrash} from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
 
 class FormListItem extends Component {
 
@@ -25,14 +24,21 @@ class FormListItem extends Component {
   };
 
   render() {
+
+    const {
+      form: {
+        formName, formType
+      },
+      formConfigIndex
+    } = {...this.props};
     return <tr>
-      <td>{this.props.form.formName}</td>
-      <td>{this.props.form.formType}</td>
+      <td>{formName}</td>
+      <td>{formType}</td>
       <td className="action-col">
-        <button className="action-button" onClick={() => this.props.editFormConfigAction(this.props.formConfigIndex)}>
+        <button className="action-button" onClick={() => this.props.editFormConfigAction(formConfigIndex)}>
           <FontAwesomeIcon icon={faEdit} className="table-icon"/>
         </button>
-        <button className="action-button" onClick={() => this.confirmDelete(this.props.formConfigIndex)}>
+        <button className="action-button" onClick={() => this.confirmDelete(formConfigIndex)}>
           <FontAwesomeIcon icon={faTrash} className="table-icon table-icon-red"/>
         </button>
       </td>
