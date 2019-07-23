@@ -1,2 +1,0 @@
-const SAVE_FILL_FORM = 'EDIT_DESIGN_FORM';
-

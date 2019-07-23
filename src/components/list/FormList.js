@@ -1,12 +1,21 @@
 import React from 'react';
 import FormListItem from "./FormListItem";
+import PropTypes from "prop-types";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlusCircle } from '@fortawesome/free-solid-svg-icons'
 
 const FormList = (props) => {
+
+  const {
+    forms,
+    onAddNewFormPageAction,
+    onDeleteFormConfigAction,
+    onEditFormConfigPageAction
+  } = {...props};
+
   return <div className="content-wrapper content-wrapper-form-list">
     <div className="control-buttons">
-      <button className="btn btn-success" onClick={() => props.addNewFormAction()}>Add Form <FontAwesomeIcon icon={faPlusCircle}/></button>
+      <button className="btn btn-success" onClick={() => onAddNewFormPageAction()}>Add Form <FontAwesomeIcon icon={faPlusCircle}/></button>
     </div>
     <div className="form-list">
 
@@ -19,19 +28,25 @@ const FormList = (props) => {
         </tr>
         </thead>
         <tbody>
-        {props.forms.map((element, index) => {
+        {forms.map((element, index) => {
           return <FormListItem
               key={index}
               formConfigIndex={index}
               form={element}
-              deleteFormConfigAction={props.deleteFormConfigAction}
-              editFormConfigAction={props.editFormConfigAction}
+              onDeleteFormConfigAction={onDeleteFormConfigAction}
+              onEditFormConfigPageAction={onEditFormConfigPageAction}
           />
         })}
         </tbody>
       </table>
     </div>
   </div>;
+};
+
+FormList.propTypes = {
+  onAddNewFormPageAction: PropTypes.func,
+  onDeleteFormConfigAction: PropTypes.func,
+  onEditFormConfigPageAction: PropTypes.func
 };
 
 export default FormList;

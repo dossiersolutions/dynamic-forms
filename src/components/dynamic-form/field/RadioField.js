@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from "prop-types";
 
 const RadioField = (props) => {
 
@@ -25,6 +26,24 @@ const RadioField = (props) => {
     </div>
   </React.Fragment>;
 
+};
+
+RadioField.propTypes = {
+  fieldId: PropTypes.string,
+  fieldName: PropTypes.string,
+  fieldTitle: PropTypes.string,
+  fieldReadOnly: PropTypes.bool,
+  fieldDisabled: PropTypes.bool,
+  fieldPlaceholder: PropTypes.string
+};
+
+RadioField.defaultProps = {
+  fieldId: "",
+  fieldName: "",
+  fieldTitle: "",
+  fieldReadOnly: "",
+  fieldDisabled: "",
+  fieldPlaceholder: ""
 };
 
 export default RadioField;

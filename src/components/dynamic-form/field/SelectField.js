@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from "prop-types";
 
 const SelectField = (props) => {
 
@@ -24,6 +25,24 @@ const SelectField = (props) => {
     </select>
   </React.Fragment>;
 
+};
+
+SelectField.propTypes = {
+  fieldId: PropTypes.string,
+  fieldName: PropTypes.string,
+  fieldTitle: PropTypes.string,
+  fieldReadOnly: PropTypes.bool,
+  fieldDisabled: PropTypes.bool,
+  fieldPlaceholder: PropTypes.string
+};
+
+SelectField.defaultProps = {
+  fieldId: "",
+  fieldName: "",
+  fieldTitle: "",
+  fieldReadOnly: "",
+  fieldDisabled: "",
+  fieldPlaceholder: ""
 };
 
 export default SelectField;

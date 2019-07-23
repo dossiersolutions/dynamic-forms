@@ -1,47 +1,80 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { actions } from '../store';
+import { bindActionCreators } from "redux";
+import Immutable from "immutable";
+import PopupWindow from "./popup/PopupWindow";
 import FormList from "../components/list/FormList";
 import FormEdit from "../components/dynamic-form/FormEdit";
 import FormFill from "../components/FormFill";
-import PopupWindow from "./popup/PopupWindow";
+import {
+  doAddFormAction,
+  doEditFormAction,
+  doAddNewFormPageAction,
+  doBackToListPageAction,
+  doAddFormFieldSetAction,
+  doDeleteFormConfigAction,
+  doEditFormConfigPageAction,
+  doClearFormConfigMatrixAction
+} from "../actions";
+
 
 class Main extends Component {
 
   onNewFormConfigSubmit = (event) => {
     event.preventDefault();
-    const formConfig = this.props.formConfigMatrix;
-    this.props.onAddFormAction(formConfig);
-    this.props.onClearFormConfigMatrix();
+    const {
+      formConfigMatrix: formConfig,
+      doAddFormAction,
+      doClearFormConfigMatrixAction
+    } = {...this.props};
+    doAddFormAction(formConfig);
+    doClearFormConfigMatrixAction();
   };
 
   onFormConfigSubmit = (event) => {
     event.preventDefault();
-    this.props.onClearFormConfigMatrix();
-    this.props.onBackToListPage();
+    const {
+      doBackToListPageAction,
+      doClearFormConfigMatrixAction
+    } = {...this.props};
+    doClearFormConfigMatrixAction();
+    doBackToListPageAction();
   };
 
   buildAddFormComponent = () => {
+    const {
+      formConfigMatrix,
+      doEditFormAction,
+      doBackToListPageAction,
+      doAddFormFieldSetAction
+    } = {...this.props};
+    const formConfig = Immutable.Map(formConfigMatrix).toJS();
     return <FormEdit
-        formConfig={this.props.formConfigMatrix}
+        formConfig={formConfig}
         formConfigIndex={-1}
-        formConfigSubmit={this.onNewFormConfigSubmit.bind(this)}
-        backToListAction={this.props.onBackToListPage}
-        handleFormChanged={this.props.onEditFormAction}
-        addFormFieldSetAction={this.props.onAddFormFieldSetAction}
+        onFormConfigSubmit={this.onNewFormConfigSubmit.bind(this)}
+        onBackToListPageAction={doBackToListPageAction}
+        onEditFormAction={doEditFormAction}
+        onAddFormFieldSetAction={doAddFormFieldSetAction}
     />;
   };
 
   buildEditFormComponent = () => {
-    let formConfigs = [...this.props.formConfigs],
-        formConfig = formConfigs[this.props.formConfigIndex];
+    const {
+      formConfigs,
+      formConfigIndex,
+      doEditFormAction,
+      doBackToListPageAction,
+      doAddFormFieldSetAction
+    } = {...this.props};
+    const formConfig = Immutable.List(formConfigs).get(formConfigIndex);
     return <FormEdit
         formConfig={formConfig}
-        formConfigIndex={this.props.formConfigIndex}
-        formConfigSubmit={this.onFormConfigSubmit.bind(this)}
-        backToListAction={this.props.onBackToListPage}
-        handleFormChanged={this.props.onEditFormAction}
-        addFormFieldSetAction={this.props.onAddFormFieldSetAction}
+        formConfigIndex={formConfigIndex}
+        onFormConfigSubmit={this.onFormConfigSubmit.bind(this)}
+        onBackToListPageAction={doBackToListPageAction}
+        onEditFormAction={doEditFormAction}
+        onAddFormFieldSetAction={doAddFormFieldSetAction}
     />;
   };
 
@@ -50,17 +83,29 @@ class Main extends Component {
   };
 
   buildListFormComponent = () => {
+    const {
+      formConfigs,
+      doAddNewFormPageAction,
+      doDeleteFormConfigAction,
+      doEditFormConfigPageAction
+    } = {...this.props};
     return <FormList
-        addNewFormAction={this.props.onAddNewFormPage}
-        forms={this.props.formConfigs}
-        deleteFormConfigAction={this.props.onDeleteFormConfigAction}
-        editFormConfigAction={this.props.onEditFormConfigPage}
+        forms={formConfigs}
+        onAddNewFormPageAction={doAddNewFormPageAction}
+        onDeleteFormConfigAction={doDeleteFormConfigAction}
+        onEditFormConfigPageAction={doEditFormConfigPageAction}
     />;
   };
 
   render() {
+    const {
+      mode,
+      showPopup,
+      popupWindowTitle,
+      popupWindowContent
+    } = {...this.props};
     let mainPart, pageName;
-    switch (this.props.mode) {
+    switch (mode) {
       case 'add': {
         pageName = 'Add new form';
         mainPart = this.buildAddFormComponent();
@@ -89,9 +134,9 @@ class Main extends Component {
             </nav>
             <div className="main-content">{mainPart}</div>
             <PopupWindow
-                showPopup={this.props.showPopup}
-                title={this.props.popupWindowTitle}
-                content={this.props.popupWindowContent}
+                showPopup={showPopup}
+                title={popupWindowTitle}
+                content={popupWindowContent}
             />
           </div>
         </React.Fragment>;
@@ -111,32 +156,16 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return {
-    onBackToListPage() {
-      dispatch(actions.backToListPage());
-    },
-    onAddNewFormPage() {
-      dispatch(actions.addNewFormPage());
-    },
-    onClearFormConfigMatrix() {
-      dispatch(actions.clearFormConfigMatrix());
-    },
-    onEditFormConfigPage(formConfigIndex) {
-      dispatch(actions.editFormConfigPage(formConfigIndex));
-    },
-    onDeleteFormConfigAction(formConfigIndex) {
-      dispatch(actions.deleteFormConfigAction(formConfigIndex));
-    },
-    onAddFormAction(formConfig) {
-      dispatch(actions.addFormAction(formConfig));
-    },
-    onEditFormAction(formConfig, fieldValue, fieldName) {
-      dispatch(actions.editFormAction(formConfig, fieldValue, fieldName));
-    },
-    onAddFormFieldSetAction(formConfigIndex, fieldsetTitle) {
-      dispatch(actions.addFormFieldSetAction(formConfigIndex, fieldsetTitle));
-    }
-  }
+  return bindActionCreators({
+    doBackToListPageAction,
+    doAddNewFormPageAction,
+    doClearFormConfigMatrixAction,
+    doEditFormConfigPageAction,
+    doDeleteFormConfigAction,
+    doAddFormAction,
+    doEditFormAction,
+    doAddFormFieldSetAction
+  }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Main);

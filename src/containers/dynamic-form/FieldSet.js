@@ -1,31 +1,52 @@
-import React, {Component} from 'react';
-import {actions} from "../../store";
-import {connect} from "react-redux";
+import React, { Component } from 'react';
+import { connect } from "react-redux";
 import Field from "./Field";
-import {confirmAlert} from "react-confirm-alert";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faEdit, faPlusCircle, faTrash} from "@fortawesome/free-solid-svg-icons";
+import {
+  doAddFieldAction,
+  doEditFieldAction,
+  doEditFieldSetAction,
+  doDeleteFieldSetAction,
+  doHidePopupWindowAction,
+  doShowPopupWindowAction,
+  doEditFormConfigPageAction,
+  doClearFieldConfigMatrixAction
+} from "../../actions";
+import { bindActionCreators } from "redux";
+import { confirmAlert } from "react-confirm-alert";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEdit, faPlusCircle, faTrash } from "@fortawesome/free-solid-svg-icons";
 import FieldSetEditPopup from "../../components/dynamic-form/FieldSetEditPopup";
 import FieldEditPopup from "../../components/dynamic-form/FieldEditPopup";
 
 class FieldSet extends Component {
 
   onSubmitEditField = (event) => {
+    const {
+      fieldSetIndex,
+      formConfigIndex,
+      doAddFieldAction,
+      doHidePopupWindowAction,
+      doClearFieldConfigMatrixAction
+    } = {...this.props};
     event.preventDefault();
     if (parseInt(event.target.fieldIndex.value) === -1) {
-      const {formConfigIndex, fieldSetIndex} = {...this.props};
-      this.props.onAddFieldAction(formConfigIndex, fieldSetIndex);
-      this.props.onClearFieldConfigMatrixAction();
+      doAddFieldAction(formConfigIndex, fieldSetIndex);
+      doClearFieldConfigMatrixAction();
     }
-    this.props.onHidePopupWindowAction();
+    doHidePopupWindowAction();
   };
 
   onChangeFieldAction = (fieldIndex, fieldName, fieldValue) => {
-    const {formConfigIndex, fieldSetIndex} = {...this.props};
-    this.props.onEditFieldAction(formConfigIndex, fieldSetIndex, fieldIndex, fieldName, fieldValue);
+    const {
+      fieldSetIndex,
+      formConfigIndex,
+      doEditFieldAction
+    } = {...this.props};
+    doEditFieldAction(formConfigIndex, fieldSetIndex, fieldIndex, fieldName, fieldValue);
   };
 
-  showEditFieldPopupWindow = (event, field, fieldIndex, isEditFieldMode) => {
+  onShowEditFieldPopupWindow = (event, field, fieldIndex, isEditFieldMode) => {
+    const { doShowPopupWindowAction } = {...this.props};
     event.preventDefault();
     const title = isEditFieldMode ? 'Edit field' : 'Add field';
     let content;
@@ -34,45 +55,56 @@ class FieldSet extends Component {
           field={field}
           fieldIndex={fieldIndex}
           onSubmitEditField={this.onSubmitEditField}
-          changeFieldAction={this.onChangeFieldAction}
+          onChangeFieldAction={this.onChangeFieldAction}
       />;
     }
     else {
       content = <FieldEditPopup
           fieldIndex={-1}
           onSubmitEditField={this.onSubmitEditField}
-          changeFieldAction={this.onChangeFieldAction}
+          onChangeFieldAction={this.onChangeFieldAction}
       />;
     }
-    this.props.onShowPopupWindowAction(title, content);
+    doShowPopupWindowAction(title, content);
   };
 
   onSubmitEditFieldSet = (event) => {
     event.preventDefault();
-    const {value, name} = {...event.target.title};
-    const {formConfigIndex, fieldSetIndex} = {...this.props};
-    this.props.onFieldSetChangedAction(formConfigIndex, fieldSetIndex, value, name);
-    this.props.onHidePopupWindowAction();
+    const { value, name } = event.target.title;
+    const {
+      fieldSetIndex,
+      formConfigIndex,
+      doEditFieldSetAction,
+      doHidePopupWindowAction
+    } = {...this.props};
+    doEditFieldSetAction(formConfigIndex, fieldSetIndex, name, value);
+    doHidePopupWindowAction();
   };
 
   showEditFieldSetPopupWindow = (event) => {
     event.preventDefault();
-    const { fieldSet } = {...this.props};
+    const {
+      fieldSet,
+      doShowPopupWindowAction
+    } = {...this.props};
     const title = 'Edit field set';
     const content = <FieldSetEditPopup onSubmitEditFieldSet={this.onSubmitEditFieldSet} fieldSet={fieldSet}/>;
-    this.props.onShowPopupWindowAction(title, content);
+    doShowPopupWindowAction(title, content);
   };
 
   confirmDeleteFieldSet = (event) => {
+    const {
+      fieldSetIndex,
+      formConfigIndex
+    } = {...this.props};
     event.preventDefault();
-    const { formConfigIndex, fieldSetIndex } = {...this.props};
     confirmAlert({
       title: 'Are you sure ??',
       message: 'Are you sure you want to delete this field set ??',
       buttons: [
         {
           label: 'Yes',
-          onClick: () => this.deleteFieldSetAction(formConfigIndex, fieldSetIndex)
+          onClick: () => this.doDeleteFieldSetAction(formConfigIndex, fieldSetIndex)
         },
         {
           label: 'No',
@@ -83,9 +115,13 @@ class FieldSet extends Component {
     });
   };
 
-  deleteFieldSetAction = (formConfigIndex, fieldSetIndex) => {
-    this.props.onDeleteFieldSetAction(formConfigIndex, fieldSetIndex);
-    this.props.onEditFormConfigPage(this.props.formConfigIndex);
+  doDeleteFieldSetAction = (formConfigIndex, fieldSetIndex) => {
+    const {
+      doDeleteFieldSetAction,
+      doEditFormConfigPageAction
+    } = {...this.props};
+    doDeleteFieldSetAction(formConfigIndex, fieldSetIndex);
+    doEditFormConfigPageAction(formConfigIndex);
   };
 
   render() {
@@ -118,16 +154,16 @@ class FieldSet extends Component {
             key={index}
             field={field}
             fieldIndex={index}
-            fieldSetIndex={formConfigIndex}
-            formConfigIndex={fieldSetIndex}
+            fieldSetIndex={fieldSetIndex}
+            formConfigIndex={formConfigIndex}
             fieldReadOnly={true}
             fieldDisabled={true}
-            showEditFieldPopupWindow={this.showEditFieldPopupWindow}
+            onShowEditFieldPopupWindow={this.onShowEditFieldPopupWindow}
         />
       })}
 
       <div className="form-group text-right">
-        <button type="button" className="btn btn-primary" onClick={(event) => this.showEditFieldPopupWindow(event)}>
+        <button type="button" className="btn btn-primary" onClick={(event) => this.onShowEditFieldPopupWindow(event)}>
           <FontAwesomeIcon icon={faPlusCircle}/> Add field
         </button>
       </div>
@@ -147,32 +183,16 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return {
-    onEditFormConfigPage(formConfigIndex) {
-      dispatch(actions.editFormConfigPage(formConfigIndex));
-    },
-    onDeleteFieldSetAction(formConfigIndex, fieldSetIndex) {
-      dispatch(actions.deleteFieldSetAction(formConfigIndex, fieldSetIndex));
-    },
-    onShowPopupWindowAction(popupWindowTitle, popupWindowContent) {
-      dispatch(actions.showPopupWindowAction(popupWindowTitle, popupWindowContent));
-    },
-    onHidePopupWindowAction() {
-      dispatch(actions.hidePopupWindowAction());
-    },
-    onFieldSetChangedAction(formConfigIndex, fieldSetIndex, fieldValue, fieldName) {
-      dispatch(actions.editFieldSetAction({formConfigIndex, fieldSetIndex, fieldValue, fieldName}));
-    },
-    onEditFieldAction(formConfigIndex, fieldSetIndex, fieldIndex, fieldName, fieldValue) {
-      dispatch(actions.editFieldAction(formConfigIndex, fieldSetIndex, fieldIndex, fieldName, fieldValue));
-    },
-    onAddFieldAction(formConfigIndex, fieldSetIndex) {
-      dispatch(actions.addFieldAction(formConfigIndex, fieldSetIndex));
-    },
-    onClearFieldConfigMatrixAction() {
-      dispatch(actions.clearFieldConfigMatrixAction());
-    }
-  }
+  return bindActionCreators({
+    doAddFieldAction,
+    doEditFieldAction,
+    doEditFieldSetAction,
+    doDeleteFieldSetAction,
+    doShowPopupWindowAction,
+    doHidePopupWindowAction,
+    doEditFormConfigPageAction,
+    doClearFieldConfigMatrixAction
+  }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(FieldSet);

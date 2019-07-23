@@ -2,6 +2,7 @@ import React from 'react';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import PropTypes from 'prop-types';
 
 const PopupWindow = (props) => {
 
@@ -43,6 +44,16 @@ const PopupWindow = (props) => {
           </div>;
   }
   return resultContent;
+};
+
+PopupWindow.propTypes = {
+  showPopup: PropTypes.bool.isRequired,
+  title: PropTypes.string,
+  content: PropTypes.any
+};
+
+PopupWindow.defaultProps = {
+  showPopup: false
 };
 
 export default PopupWindow;

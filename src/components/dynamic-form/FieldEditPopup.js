@@ -1,23 +1,26 @@
 import React from 'react';
+import PropTypes from "prop-types";
 
 function FieldEditPopup(props) {
 
-  const changeAction = (event) => {
-    props.changeFieldAction(props.fieldIndex, event.target.name, event.target.value);
+  const onChangeAction = (event) => {
+    const { onChangeFieldAction } = {...props};
+    onChangeFieldAction(props.fieldIndex, event.target.name, event.target.value);
   };
 
   const {
-    field,
-    fieldIndex
+    field: {
+      type,
+      title,
+      placeholder,
+      defaultValue
+    },
+    fieldIndex,
+    onSubmitEditField
   } = {...props};
 
-  const title = field && field.title ? field.title : '';
-  const type = field && field.type ? field.type : '';
-  const placeholder = field && field.placeholder ? field.placeholder : '';
-  const defaultValue = field && field.defaultValue ? field.defaultValue : '';
-
   return <div>
-    <form onSubmit={(event) => props.onSubmitEditField(event)}>
+    <form onSubmit={(event) => onSubmitEditField(event)}>
 
       <input
           type="hidden"
@@ -37,7 +40,7 @@ function FieldEditPopup(props) {
             defaultValue={title}
             placeholder="Enter field title..."
             required
-            onChange={changeAction}
+            onChange={onChangeAction}
         />
       </div>
 
@@ -51,9 +54,9 @@ function FieldEditPopup(props) {
             name="type"
             defaultValue={type}
             disabled={fieldIndex !== -1}
-            onChange={changeAction}
+            onChange={onChangeAction}
         >
-          <option value=''>--</option>
+          <option value="">--</option>
           <option value="text">Text</option>
           <option value="email">Email</option>
           <option value="radio">Radio</option>
@@ -72,7 +75,7 @@ function FieldEditPopup(props) {
             name="placeholder"
             defaultValue={placeholder}
             placeholder="Enter field placeholder..."
-            onChange={changeAction}
+            onChange={onChangeAction}
         />
       </div>
 
@@ -85,7 +88,7 @@ function FieldEditPopup(props) {
             name="defaultValue"
             defaultValue={defaultValue}
             placeholder="Enter field default value..."
-            onChange={changeAction}
+            onChange={onChangeAction}
         />
       </div>
 
@@ -96,5 +99,27 @@ function FieldEditPopup(props) {
     </form>
   </div>;
 }
+
+FieldEditPopup.propTypes = {
+  field: PropTypes.shape({
+    type: PropTypes.string,
+    title: PropTypes.string,
+    placeholder: PropTypes.string,
+    defaultValue: PropTypes.string
+  }),
+  fieldIndex: PropTypes.number,
+  onSubmitEditField: PropTypes.func,
+  onChangeFieldAction: PropTypes.func
+};
+
+FieldEditPopup.defaultProps = {
+  field: {
+    type: "",
+    title: "",
+    placeholder: "",
+    defaultValue: "",
+  },
+  fieldIndex: null
+};
 
 export default FieldEditPopup;

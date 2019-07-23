@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from "prop-types";
 
 const EmailField = (props) => {
 
@@ -24,6 +25,24 @@ const EmailField = (props) => {
     />
   </React.Fragment>;
 
+};
+
+EmailField.propTypes = {
+  fieldId: PropTypes.string,
+  fieldName: PropTypes.string,
+  fieldTitle: PropTypes.string,
+  fieldReadOnly: PropTypes.bool,
+  fieldDisabled: PropTypes.bool,
+  fieldPlaceholder: PropTypes.string
+};
+
+EmailField.defaultProps = {
+  fieldId: "",
+  fieldName: "",
+  fieldTitle: "",
+  fieldReadOnly: "",
+  fieldDisabled: "",
+  fieldPlaceholder: ""
 };
 
 export default EmailField;

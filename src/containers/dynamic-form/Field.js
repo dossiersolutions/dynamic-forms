@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { actions } from "../../store";
 import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 import { confirmAlert } from "react-confirm-alert";
+import { doDeleteFieldAction } from "../../actions";
 import TextField from "../../components/dynamic-form/field/TextField";
 import EmailField from "../../components/dynamic-form/field/EmailField";
 import TextareaField from "../../components/dynamic-form/field/TextareaField";
 import CheckboxField from "../../components/dynamic-form/field/CheckboxField";
 import RadioField from "../../components/dynamic-form/field/RadioField";
 import SelectField from "../../components/dynamic-form/field/SelectField";
+
 
 class Field extends Component {
 
@@ -18,8 +20,15 @@ class Field extends Component {
     const {
       fieldIndex,
       fieldSetIndex,
-      formConfigIndex
+      formConfigIndex,
+      doDeleteFieldAction
     } = {...this.props};
+
+    console.log({
+      formConfigIndex,
+      fieldSetIndex,
+      fieldIndex
+    });
 
     event.preventDefault();
     confirmAlert({
@@ -28,7 +37,7 @@ class Field extends Component {
       buttons: [
         {
           label: 'Yes',
-          onClick: () => this.props.onDeleteFieldAction(formConfigIndex, fieldSetIndex, fieldIndex)
+          onClick: () => doDeleteFieldAction(formConfigIndex, fieldSetIndex, fieldIndex)
         },
         {
           label: 'No',
@@ -42,6 +51,7 @@ class Field extends Component {
   render() {
 
     const {
+      field,
       field: {
         id: fieldId,
         name: fieldName,
@@ -52,7 +62,8 @@ class Field extends Component {
       },
       fieldIndex,
       fieldReadOnly,
-      fieldDisabled
+      fieldDisabled,
+      onShowEditFieldPopupWindow
     } = {...this.props};
 
     let fieldTemplate;
@@ -129,15 +140,12 @@ class Field extends Component {
         />;
         break;
       }
-
     }
 
     return <div className={'form-group form-group-' + fieldType}>
         {fieldTemplate}
         <span className="inline-action-button-wrapper">
-            <button className="inline-action-button" onClick={
-              (event) => this.props.showEditFieldPopupWindow(event, this.props.field, fieldIndex, true)
-            }>
+            <button className="inline-action-button" onClick={(event) => onShowEditFieldPopupWindow(event, field, fieldIndex, true)}>
               <FontAwesomeIcon icon={faEdit} className="action-icon"/>
             </button>
           </span>
@@ -152,11 +160,9 @@ class Field extends Component {
 }
 
 function mapDispatchToProps(dispatch) {
-  return {
-    onDeleteFieldAction(formConfigIndex, fieldSetIndex, fieldIndex) {
-      dispatch(actions.deleteFieldAction(formConfigIndex, fieldSetIndex, fieldIndex));
-    }
-  }
+  return bindActionCreators({
+    doDeleteFieldAction
+  }, dispatch);
 }
 
 export default connect(null, mapDispatchToProps)(Field);
